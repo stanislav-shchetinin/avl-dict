@@ -1,0 +1,5 @@
+(executable
+     (name main)
+     (modules main)
+     (libraries avl_dict)
+     (public_name main))
