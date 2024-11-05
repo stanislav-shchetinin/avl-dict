@@ -47,14 +47,14 @@ let balance = function
 
 let rec find key = function
   | Empty -> None
-  | Node {key = k; value; left; right; _} as node ->
+  | Node {key = k; value; left; right; _} ->
     if k < key then find key left
     else if k > key then find key right
     else Some value
 
 let rec insert key value = function
   | Empty -> create_node key value Empty Empty
-  | Node {key = k; value = v; left; right; _} as node ->
+  | Node {key = k; value = v; left; right; _} ->
     if k < key then 
       create_node k v (insert key value left) right |> balance
     else if k > key then
@@ -68,7 +68,7 @@ let rec min_node = function
 
 let rec erase key = function
   | Empty -> Empty
-  | Node {key = k; value = v; left; right; _} as node ->
+  | Node {key = k; value = v; left; right; _} ->
     if k < key then 
       create_node k v (erase key left) right |> balance
     else if k > key then
@@ -91,15 +91,13 @@ let rec to_list = function
   | Empty -> []
   | Node {key; value; left; right; _} -> to_list left @ [(key, value)] @ to_list right
 
-let rec filter (f: ('k, 'v) t -> bool) node =
-  if f node then
-    match node with
-    | Empty -> f Empty
-    | Node {key; value; left; right; _} -> create_node key value (f left) (f right)
-  else 
-    f (erase node)
-
-let rec map (f: 'v -> 'v) node = function
+let rec filter (f: 'v -> bool) = function
   | Empty -> Empty
-  | Node {key; value; left; right; _} -> create_node key (f value) (map left) (map right) 
+  | Node {key; value; left; right; _} as node -> 
+    if f value then create_node key value (filter f left) (filter f right) |> balance
+    else filter f (erase key node)
+
+let rec map (f: 'v -> 'v) = function
+  | Empty -> Empty
+  | Node {key; value; left; right; _} -> create_node key (f value) (map f left) (map f right) 
 
