@@ -45,56 +45,53 @@ let balance = function
       else create_node key value (rotate_left left) right |> rotate_right
     else node
 
-let find key = function
-  | Empty -> Empty
-  | Node {k = key; left; right; _} as node ->
+let rec find key = function
+  | Empty -> None
+  | Node {key = k; value; left; right; _} as node ->
     if k < key then find key left
-    else if k > key find key right
-    else node
+    else if k > key then find key right
+    else Some value
 
-let insert key value = function
+let rec insert key value = function
   | Empty -> create_node key value Empty Empty
-  | Node {k = key; v = value; left; right; _} as node ->
+  | Node {key = k; value = v; left; right; _} as node ->
     if k < key then 
       create_node k v (insert key value left) right |> balance
-    else if k > key 
+    else if k > key then
       create_node k v left (insert key value right) |> balance
     else create_node key value left right
 
-let min_node = function
-  | Empty -> Empty
-  | Node {left; _} as node ->
-    match left with
-      | Empty -> node
-      | _ -> min_node left
+let rec min_node = function
+  | Empty -> failwith "Tree is empty"
+  | Node {key; value; left = Empty; _} -> (key, value)
+  | Node {left; _} -> min_node left
 
-let erase key = function
+let rec erase key = function
   | Empty -> Empty
-  | Node {k = key; v = value; left; right; _} as node ->
+  | Node {key = k; value = v; left; right; _} as node ->
     if k < key then 
-      create_node k v (erase key value left) right |> balance
-    else if k > key 
-      create_node k v left (erase key value right) |> balance
+      create_node k v (erase key left) right |> balance
+    else if k > key then
+      create_node k v left (erase key right) |> balance
     else 
-      match node with
-      | Node {Empty; Empty; _} -> Empty
-      | Node {left; Empty; _} -> left
-      | Node {Empty; right; _} -> right
-      | Node {left; right; _} -> 
-        let er_node = min_node right in
-          match er_node with
-          | Node {k = key; v = value; l = left; r = right; _} ->
-            create_node k v left (erase k right)
+      match left, right with
+      | Empty, Empty -> Empty
+      | _, Empty -> left
+      | Empty, _ -> right
+      | _, _ ->
+        let k, v = min_node right in
+        create_node k v left (erase k right) |> balance
+            
 
 let is_empty = function
   | Empty -> true
   | _ -> false
 
-let to_list = function
+let rec to_list = function
   | Empty -> []
   | Node {key; value; left; right; _} -> to_list left @ [(key, value)] @ to_list right
 
-let filter (f: ('k, 'v) t -> bool) node =
+let rec filter (f: ('k, 'v) t -> bool) node =
   if f node then
     match node with
     | Empty -> f Empty
@@ -102,7 +99,7 @@ let filter (f: ('k, 'v) t -> bool) node =
   else 
     f (erase node)
 
-let map (f: 'v -> 'v) node = function
+let rec map (f: 'v -> 'v) node = function
   | Empty -> Empty
   | Node {key; value; left; right; _} -> create_node key (f value) (map left) (map right) 
 
