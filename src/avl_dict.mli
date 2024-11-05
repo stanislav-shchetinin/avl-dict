@@ -10,4 +10,5 @@ val is_empty : ('k, 'v) t -> bool
 val to_list : ('k, 'v) t -> ('k * 'v) list
 val filter : ('v -> bool) -> ('k, 'v) t -> ('k, 'v) t
 val map : ('v -> 'v) -> ('k, 'v) t -> ('k, 'v) t
-
+val foldl : (('k, 'v) t -> ('k, 'v) t -> ('k, 'v) t) -> ('k, 'v) t -> ('k, 'v) t
+val foldr : (('k, 'v) t -> ('k, 'v) t -> ('k, 'v) t) -> ('k, 'v) t -> ('k, 'v) t

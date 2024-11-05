@@ -61,10 +61,20 @@ let rec insert key value = function
       create_node k v left (insert key value right) |> balance
     else create_node key value left right
 
-let rec min_node = function
+let rec min_node_kv = function
   | Empty -> failwith "Tree is empty"
   | Node {key; value; left = Empty; _} -> (key, value)
+  | Node {left; _} -> min_node_kv left
+
+let rec min_node = function
+  | Empty -> Empty
+  | Node {left = Empty; _} as node -> node
   | Node {left; _} -> min_node left
+
+let rec max_node = function
+  | Empty -> Empty
+  | Node {right = Empty; _} as node -> node
+  | Node {right; _} -> max_node right
 
 let rec erase key = function
   | Empty -> Empty
@@ -79,7 +89,7 @@ let rec erase key = function
       | _, Empty -> left
       | Empty, _ -> right
       | _, _ ->
-        let k, v = min_node right in
+        let k, v = min_node_kv right in
         create_node k v left (erase k right) |> balance
             
 
@@ -101,3 +111,18 @@ let rec map (f: 'v -> 'v) = function
   | Empty -> Empty
   | Node {key; value; left; right; _} -> create_node key (f value) (map f left) (map f right) 
 
+let rec foldl (f: ('k, 'v) t -> ('k, 'v) t -> ('k, 'v) t) = function
+  | Empty -> Empty
+  | node ->
+    match min_node node with
+    | Empty -> Empty
+    | Node {key = ks; _} as mnode ->
+    f (mnode) (erase ks mnode |> foldl f)
+
+let rec foldr (f: ('k, 'v) t -> ('k, 'v) t -> ('k, 'v) t) = function
+  | Empty -> Empty
+  | node ->
+    match max_node node with
+    | Empty -> Empty
+    | Node {key = ks; _} as mxnode ->
+    f (mxnode) (erase ks mxnode |> foldr f)
