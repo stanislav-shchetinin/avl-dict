@@ -13,5 +13,7 @@ let insert_test key value tree =
   match find key new_tree with
   | None -> assert false
   | Some v -> assert (v = value)  
- 
-    
+
+let erase_test key tree = 
+  let new_tree = erase key tree in
+  assert (find key new_tree = None)

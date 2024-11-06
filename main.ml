@@ -16,3 +16,8 @@ let () = find_test 5 tree data
 let () = insert_test 10 "10" tree
 let () = insert_test 1 "3" tree
 let () = insert_test 1 "1" tree
+
+(* Erase tests *)
+let() = erase_test 1 tree
+let() = erase_test 2 tree
+let() = erase_test 42 tree

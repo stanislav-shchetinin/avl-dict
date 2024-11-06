@@ -126,3 +126,19 @@ let rec foldr (f: ('k, 'v) t -> ('k, 'v) t -> ('k, 'v) t) = function
     | Empty -> Empty
     | Node {key = ks; _} as mxnode ->
     f (mxnode) (erase ks mxnode |> foldr f)
+
+let rec merge node1 = function
+  | Empty -> node1
+  | node2 -> 
+      match node1 with
+      | Empty -> node2
+      | Node {key; value; _} -> merge (insert key value node2) (erase key node1)     
+
+let rec equalse node1 node2 =
+  match node1, node2 with 
+  | Empty, Empty -> true
+  | Node {key = k1; value = v1; _}, Node {key = k2; value = v2; _} ->
+    if k1 = k2 && v1 = v2 then
+      equalse (erase k1 node1) (erase k2 node2)
+    else false
+  | _ -> false
