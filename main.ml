@@ -1,16 +1,18 @@
 (* main.ml *)
 
 open Avl_dict
+open Avl_dict_ut
 
-let () =
-  let dict = empty |> insert 3 "three" |> insert 1 "one" |> insert 2 "two" in
-  
-  (* Используем переменную dict, чтобы избежать предупреждения *)
-  let _ = dict in
-  
-  match find 2 dict with
-  | Some value -> Printf.printf "Found: %s\n" value
-  | None -> Printf.printf "Not found\n";
-  
-  let elements = to_list dict in
-  List.iter (fun (k, v) -> Printf.printf "%d: %s\n" k v) elements
+(* Preparation *)
+let data = [ (1, "1"); (5, "5"); (3, "3"); (42, "42") ]
+let tree = List.fold_left (fun tree (k, v) -> insert k v tree) empty data
+
+(* Find tests *)
+let () = find_test 1 tree data
+let () = find_test 2 tree data
+let () = find_test 5 tree data
+
+(* Insert tests *)
+let () = insert_test 10 "10" tree
+let () = insert_test 1 "3" tree
+let () = insert_test 1 "1" tree
