@@ -1,7 +1,10 @@
 (* main.ml *)
 
 open Avl_dict
+open Test
 open Avl_dict_ut
+open Pbt
+open Format
 
 (* Preparation *)
 let data = [ (1, "1"); (5, "5"); (3, "3"); (42, "42") ]
@@ -21,3 +24,5 @@ let () = insert_test 1 "1" tree
 let() = erase_test 1 tree
 let() = erase_test 2 tree
 let() = erase_test 42 tree
+
+let() = printf "%d" ajjjj

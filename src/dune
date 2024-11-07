@@ -1,2 +1,3 @@
 (library
+ (modules avl_dict)
  (name avl_dict))

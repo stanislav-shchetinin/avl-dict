@@ -1,6 +1,5 @@
 (executable
      (name main)
-     (modules main avl_dict_ut)
-     (libraries avl_dict)
+     (modules main)
+     (libraries avl_dict test)
      (public_name main))
-     
