@@ -127,11 +127,12 @@ let rec foldr (f: ('k, 'v) t -> ('k, 'v) t -> ('k, 'v) t) = function
     | Node {key = ks; _} as mxnode ->
     f (mxnode) (erase ks mxnode |> foldr f)
 
-let rec merge node1 node2 =
-  match node1, node2 with
-  | _, Empty -> node1
-  | Empty, _ -> node2
-  | Node {key; value; _}, _ -> merge (insert key value node2) (erase key node1)    
+let merge node1 node2 =
+  let rec insert_all tree = function
+    | [] -> tree
+    | (key, value) :: rest -> insert_all (insert key value tree) rest
+  in
+  insert_all node2 (to_list node1)
     
 
 let equals node1 node2 =
