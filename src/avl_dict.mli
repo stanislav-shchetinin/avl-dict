@@ -17,4 +17,4 @@ val foldl       : (('k, 'v) t -> ('k, 'v) t -> ('k, 'v) t) -> ('k, 'v) t -> ('k,
 val foldr       : (('k, 'v) t -> ('k, 'v) t -> ('k, 'v) t) -> ('k, 'v) t -> ('k, 'v) t
 
 val merge       : ('k, 'v) t -> ('k, 'v) t -> ('k, 'v) t
-val equalse     : ('k, 'v) t -> ('k, 'v) t -> bool
+val equals      : ('k, 'v) t -> ('k, 'v) t -> bool

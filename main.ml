@@ -25,4 +25,7 @@ let() = erase_test 1 tree
 let() = erase_test 2 tree
 let() = erase_test 42 tree
 
-let() = printf "%d" ajjjj
+(* Monoid *)
+let() = neutral_element_test
+
+let() = printf "%d" 5
