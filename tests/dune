@@ -1,4 +1,3 @@
-(library
- (libraries avl_dict)
- (modules pbt avl_dict_ut)
- (name test))
+(test
+ (name pbt)
+ (libraries avl_dict))

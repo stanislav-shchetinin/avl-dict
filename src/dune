@@ -1,3 +1,8 @@
 (library
  (modules avl_dict)
  (name avl_dict))
+
+(test
+ (modules avl_dict_ut)
+ (libraries avl_dict)
+ (name avl_dict_ut))

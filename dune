@@ -1,5 +1,5 @@
 (executable
      (name main)
      (modules main)
-     (libraries avl_dict test)
+     (libraries avl_dict)
      (public_name main))

@@ -24,3 +24,9 @@ let associativity_test =
   assert (
     equals (merge a (merge b c)) (merge (merge a b) c)
   )
+
+(* Monoid tests *)
+let () = neutral_element_test
+let () = associativity_test
+
+let() = Printf.printf "Monoid tests: OK\n"
