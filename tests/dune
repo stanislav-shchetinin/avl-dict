@@ -1,3 +1,7 @@
 (test
  (name pbt)
  (libraries avl_dict))
+
+(test
+ (name avl_dict_ut)
+ (libraries avl_dict))
