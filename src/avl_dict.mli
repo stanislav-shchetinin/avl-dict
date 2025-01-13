@@ -13,8 +13,8 @@ val to_list     : ('k, 'v) t -> ('k * 'v) list
 
 val filter      : ('v -> bool) -> ('k, 'v) t -> ('k, 'v) t
 val map         : ('v -> 'v) -> ('k, 'v) t -> ('k, 'v) t
-val foldl       : (('k, 'v) t -> ('k, 'v) t -> ('k, 'v) t) -> ('k, 'v) t -> ('k, 'v) t
-val foldr       : (('k, 'v) t -> ('k, 'v) t -> ('k, 'v) t) -> ('k, 'v) t -> ('k, 'v) t
+val foldl       : ('acc -> 'v -> 'acc) -> 'acc -> ('k, 'v) t -> 'acc
+val foldr       : ('v -> 'acc  -> 'acc) -> 'acc -> ('k, 'v) t -> 'acc
 
 val merge       : ('k, 'v) t -> ('k, 'v) t -> ('k, 'v) t
 val equals      : ('k, 'v) t -> ('k, 'v) t -> bool

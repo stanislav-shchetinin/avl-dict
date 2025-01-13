@@ -35,7 +35,7 @@ let rotate_right = function
 
 let balance = function
   | Empty -> Empty
-  | Node {key; value; left;  right; _} as node -> 
+  | Node {key; value; left; right; _} as node -> 
     let bf = balance_factor node in
     if bf = -2 then
       if balance_factor right <= 0 then rotate_left node
@@ -48,16 +48,16 @@ let balance = function
 let rec find key = function
   | Empty -> None
   | Node {key = k; value; left; right; _} ->
-    if k < key then find key left
-    else if k > key then find key right
+    if key < k then find key left
+    else if key > k then find key right
     else Some value
 
 let rec insert key value = function
   | Empty -> create_node key value Empty Empty
   | Node {key = k; value = v; left; right; _} ->
-    if k < key then 
+    if key < k then 
       create_node k v (insert key value left) right |> balance
-    else if k > key then
+    else if key > k then
       create_node k v left (insert key value right) |> balance
     else create_node key value left right
 
@@ -66,22 +66,12 @@ let rec min_node_kv = function
   | Node {key; value; left = Empty; _} -> (key, value)
   | Node {left; _} -> min_node_kv left
 
-let rec min_node = function
-  | Empty -> Empty
-  | Node {left = Empty; _} as node -> node
-  | Node {left; _} -> min_node left
-
-let rec max_node = function
-  | Empty -> Empty
-  | Node {right = Empty; _} as node -> node
-  | Node {right; _} -> max_node right
-
 let rec erase key = function
   | Empty -> Empty
   | Node {key = k; value = v; left; right; _} ->
-    if k < key then 
+    if key < k then 
       create_node k v (erase key left) right |> balance
-    else if k > key then
+    else if key > k then
       create_node k v left (erase key right) |> balance
     else 
       match left, right with
@@ -92,14 +82,14 @@ let rec erase key = function
         let k, v = min_node_kv right in
         create_node k v left (erase k right) |> balance
             
-
 let is_empty = function
   | Empty -> true
   | _ -> false
 
 let rec to_list = function
   | Empty -> []
-  | Node {key; value; left; right; _} -> to_list left @ [(key, value)] @ to_list right
+  | Node {key; value; left; right; _} ->
+    to_list left @ [(key, value)] @ to_list right
 
 let rec filter (f: 'v -> bool) = function
   | Empty -> Empty
@@ -111,21 +101,21 @@ let rec map (f: 'v -> 'v) = function
   | Empty -> Empty
   | Node {key; value; left; right; _} -> create_node key (f value) (map f left) (map f right) 
 
-let rec foldl (f: ('k, 'v) t -> ('k, 'v) t -> ('k, 'v) t) = function
-  | Empty -> Empty
-  | node ->
-    match min_node node with
-    | Empty -> Empty
-    | Node {key = ks; _} as mnode ->
-    f (mnode) (erase ks mnode |> foldl f)
+let rec foldl f acc tree =
+  match tree with
+  | Empty -> acc
+  | Node { value; left; right; _ } ->
+      let acc = foldl f acc left in
+      let acc = f acc value in
+      foldl f acc right
 
-let rec foldr (f: ('k, 'v) t -> ('k, 'v) t -> ('k, 'v) t) = function
-  | Empty -> Empty
-  | node ->
-    match max_node node with
-    | Empty -> Empty
-    | Node {key = ks; _} as mxnode ->
-    f (mxnode) (erase ks mxnode |> foldr f)
+let rec foldr f acc tree =
+  match tree with
+  | Empty -> acc
+  | Node { value; left; right; _ } ->
+      let acc = foldr f acc right in
+      let acc = f value acc in
+      foldr f acc left
 
 let merge node1 node2 =
   let rec insert_all tree = function
@@ -134,6 +124,5 @@ let merge node1 node2 =
   in
   insert_all node2 (to_list node1)
     
-
 let equals node1 node2 =
   to_list node1 = to_list node2
