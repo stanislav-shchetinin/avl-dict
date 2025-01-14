@@ -1,6 +1,6 @@
 (test
  (name pbt)
- (libraries avl_dict))
+ (libraries avl_dict qcheck))
 
 (test
  (name avl_dict_ut)
